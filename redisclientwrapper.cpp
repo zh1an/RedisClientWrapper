@@ -198,14 +198,8 @@ std::error_code RedisClientWrapper::Redis_HmGet(const std::string &strKey,
 std::error_code RedisClientWrapper::Redis_HmDel(const std::string &strKey) {
     REDIS_CHECK
 
-    std::unordered_map<std::string, std::string> results;
-    redisClient_->client_->hgetall(strKey, std::inserter(results, results.begin()));
+    redisClient_->client_->del(strKey);
 
-    std::vector<std::string> fields;
-    fields.reserve(results.size());
-    for (const auto &result: results) { fields.emplace_back(result.first); }
-
-    redisClient_->client_->hdel(strKey, fields.begin(), fields.end());
     return MAKE_SUCCESS_CODE;
 
     REDIS_END
