@@ -164,6 +164,9 @@ std::error_code RedisClientWrapper::StartService() {
                                                                    redisClient_->connectionPoolOptions_);
     }
 
+    auto pong = redisClient_->client_->ping();
+    if (pong != "PONG") { return MAKE_ERROR_CODE(RCWErrorCode::IoError); }
+
     return MAKE_SUCCESS_CODE;
 }
 

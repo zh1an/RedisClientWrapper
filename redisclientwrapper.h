@@ -18,7 +18,7 @@
 #define REDIS_CLIENT_WRAPPER_EXPORT __declspec(dllimport)
 #endif
 #else
-#define
+#define REDIS_CLIENT_WRAPPER_EXPORT
 #endif
 
 namespace redis_client_wrapper {
