@@ -99,30 +99,22 @@ using namespace redis_client_wrapper;
 #define REDIS_END                                                                                            \
     }                                                                                                        \
     catch (const sw::redis::TimeoutError & /*IoError*/) {                                                    \
-        if (redisClient_->client_ != nullptr) {                                                              \
-            redisClient_->client_ = nullptr;                                                                 \
-        }                                                                                                    \
+        if (redisClient_->client_ != nullptr) { redisClient_->client_ = nullptr; }                           \
         return MAKE_ERROR_CODE(RCWErrorCode::IoError);                                                       \
     }                                                                                                        \
     catch (const sw::redis::IoError & /*TimeoutError*/) {                                                    \
-        if (redisClient_->client_ != nullptr) {                                                              \
-            redisClient_->client_ = nullptr;                                                                 \
-        }                                                                                                    \
+        if (redisClient_->client_ != nullptr) { redisClient_->client_ = nullptr; }                           \
         return MAKE_ERROR_CODE(RCWErrorCode::TimeoutError);                                                  \
     }                                                                                                        \
     catch (const sw::redis::ClosedError & /*ClosedError*/) {                                                 \
-        if (redisClient_->client_ != nullptr) {                                                              \
-            redisClient_->client_ = nullptr;                                                                 \
-        }                                                                                                    \
+        if (redisClient_->client_ != nullptr) { redisClient_->client_ = nullptr; }                           \
         return MAKE_ERROR_CODE(RCWErrorCode::ClosedError);                                                   \
     }                                                                                                        \
     catch (const sw::redis::ProtoError & /*ProtoError*/) {                                                   \
         return MAKE_ERROR_CODE(RCWErrorCode::ProtoError);                                                    \
     }                                                                                                        \
     catch (const sw::redis::OomError & /*OomError*/) {                                                       \
-        if (redisClient_->client_ != nullptr) {                                                              \
-            redisClient_->client_ = nullptr;                                                                 \
-        }                                                                                                    \
+        if (redisClient_->client_ != nullptr) { redisClient_->client_ = nullptr; }                           \
         return MAKE_ERROR_CODE(RCWErrorCode::OomError);                                                      \
     }                                                                                                        \
     catch (const sw::redis::ReplyError & /*ReplyError*/) {                                                   \
@@ -138,7 +130,7 @@ using namespace redis_client_wrapper;
         return MAKE_ERROR_CODE(RCWErrorCode::SystemError);                                                   \
     }
 
-RedisClientWrapper::RedisClientWrapper() : redisClient_(nullptr) {}
+RedisClientWrapper::RedisClientWrapper() : redisClient_(new redis_client_wrapper::redis_client) {}
 
 RedisClientWrapper::~RedisClientWrapper() {
     if (redisClient_) {
@@ -176,9 +168,7 @@ std::error_code RedisClientWrapper::StartService() {
 }
 
 std::error_code RedisClientWrapper::ConcludeService() {
-    if (redisClient_->client_ != nullptr) {
-        redisClient_->client_ = nullptr;
-    }
+    if (redisClient_->client_ != nullptr) { redisClient_->client_ = nullptr; }
 
     return MAKE_SUCCESS_CODE;
 }
